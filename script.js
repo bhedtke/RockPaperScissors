@@ -1,8 +1,16 @@
+const ROCK = 0;
+const PAPER = 1;
+const SCISSORS = 2;
+let roundsPlayed = 0;
+let humanScore = 0;
+let computerScore = 0;
+
+
 function getComputerChoice() {
     let numChoice = Math.floor(Math.random() * 3);
-    if (numChoice == 0) 
+    if (numChoice == ROCK) 
         return "rock"; 
-    else if (numChoice == 1)
+    else if (numChoice == PAPER)
         return "paper";
     else
         return "scissors";
@@ -19,40 +27,37 @@ function getHumanChoice() {
 
 
 
-function playRound(humanChoice, computerChoice) {
+function playRound(humanChoice, computerChoice = getComputerChoice()) {
     if (humanChoice == computerChoice) {
-        console.log("Tie! Both picked " + humanChoice);
-        return 0;
+        document.getElementById("result").innerText = "Tie! Both picked " + humanChoice;
     }
     else if ((humanChoice == "rock" && computerChoice == "scissors") || (humanChoice == "paper" && computerChoice == "rock") || (humanChoice == "scissors" && computerChoice == "paper")) {
-        console.log("You win! " + humanChoice + " beats "+ computerChoice + ".")
-        return 1;
+        document.getElementById("result").innerText = "You win! " + humanChoice + " beats "+ computerChoice;
+        humanScore++;
     } else {
-        console.log("You lose! " + computerChoice + " beats "+ humanChoice + ".")
-        return 2;
+        document.getElementById("result").innerText = "You lose! " + computerChoice + " beats "+ humanChoice
+        computerScore++;
+    }
+    roundsPlayed++;
+    document.getElementById("score").innerText = `Score: You- ${humanScore} Computer- ${computerScore}`;
+    if (roundsPlayed == 5)
+    {
+        let result = 'Tied Game.';
+        if (humanScore > computerScore) result = "You win.";
+        if (computerScore > humanScore) result = "Computer wins.";
+        alert(`5 rounds played. ${result} Play again?`);
+        roundsPlayed = 0;
+        humanScore = 0;
+        computerScore = 0;
+        document.getElementById("result").innerText = '';
+        document.getElementById("score").innerText = 'Score: You- 0 Computer- 0';
     }
 }
 
-function playGame() {
-    let humanScore = 0;
-    let computerScore = 0;
-    let result;
-    for (let round = 1; round <= 5; round++) {
-        result = playRound(getHumanChoice(), getComputerChoice());
-        if (result == 1) {
-            humanScore++;
-        }
-        else if (result == 2) {
-            computerScore++;
-        }
-    }
-    if (humanScore > computerScore) {
-        console.log("You win! " + humanScore + " to " + computerScore);
-    } else if (computerScore > humanScore) {
-        console.log("You lose! " + humanScore + " to " + computerScore);
-    } else {
-        console.log("Tie! " + humanScore + " to " + computerScore);
-    }
-}
 
-playGame();
+
+
+let buttons = document.querySelectorAll('.buttongroup button')
+buttons.forEach(button => {
+    button.addEventListener("click", () => {playRound(button.id)});
+});
